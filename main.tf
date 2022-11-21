@@ -9,9 +9,13 @@ locals {
     Terraform   = true
   }
 }
+resource "random_id" "id" {
+	  byte_length = 8
+}
+
 
 resource "aws_s3_bucket" "b" {
-  bucket = "oidc-bucket"
+  bucket = "${random_id.id.hex}-bucket"
 
   tags = {
     Name        = "OIDC bucket"
