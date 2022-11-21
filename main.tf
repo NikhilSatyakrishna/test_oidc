@@ -11,7 +11,7 @@ locals {
 }
 
 resource "aws_s3_bucket" "b" {
-  bucket = "oidc_bucket"
+  bucket = "oidc-bucket"
 
   tags = {
     Name        = "OIDC bucket"
