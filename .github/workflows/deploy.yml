@@ -1,0 +1,40 @@
+name: AFT Module Configuration
+on: workflow_dispatch
+env:
+  AWS_REGION : "eu-west-1"
+
+permissions:
+      id-token: write 
+      contents: read
+jobs:
+  BuildAFTPipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::366035027845:role/some_role
+          role-session-name: aftsession
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Setup Terrafprm
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+      - name: Terraform init
+        id: init
+        run: terraform init
+        working-directory: "../"
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+        working-directory: "../"
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan
+        working-directory: "../"
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
+        working-directory: "../"
