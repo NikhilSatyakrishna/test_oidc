@@ -8,22 +8,22 @@ locals {
     Region      = var.region
     Terraform   = true
   }
+
 }
-resource "random_id" "id" {
-	  byte_length = 8
-}
-
-
-resource "aws_s3_bucket" "b" {
-  bucket = "${random_id.id.hex}-bucket"
-
-  tags = {
-    Name        = "OIDC bucket"
-    Environment = "Dev"
+data "aws_iam_policy_document" "vsensor_assume_policy" {
+  version = "2012-10-17"
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
   }
 }
 
-resource "aws_s3_bucket_acl" "example" {
-  bucket = aws_s3_bucket.b.id
-  acl    = "private"
+resource "aws_iam_role" "vsensor_role" {
+  name               = data.bnw_name.vsensor_role_name.name
+  assume_role_policy = data.aws_iam_policy_document.vsensor_assume_policy.json
+  tags               = local.common_tags
 }
