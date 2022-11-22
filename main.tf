@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "vsensor_assume_policy" {
 }
 
 resource "aws_iam_role" "vsensor_role" {
-  name               = data.bnw_name.vsensor_role_name.name
+  name               = "a_test_role"
   assume_role_policy = data.aws_iam_policy_document.vsensor_assume_policy.json
   tags               = local.common_tags
 }
